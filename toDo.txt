@@ -1,0 +1,5 @@
+To Do:
+Separately for each table for each year:
+1. Create a new attribute for each year, named "year"
+2. Convert all strings into numeric values
+   
