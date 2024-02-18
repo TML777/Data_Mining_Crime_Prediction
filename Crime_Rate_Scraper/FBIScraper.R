@@ -4,7 +4,7 @@ library("jsonlite")
 
 
 ###### Set working directory
-FOLDER <- "/Users/tiko/R_Programs/Crime_Rate_Scrapper"
+FOLDER <- "/Users/tiko/R_Programs/Crime_Rate_Scraper"
 setwd(FOLDER)
 
 
@@ -30,7 +30,7 @@ for(year in 2005:2019){
         ### Link to 2006-2009 tables
         tableLink <- paste0("https://www2.fbi.gov/ucr/cius", year, "/data/table_08_ca.html")
       }
-      
+       
       ### Reads html finds the table and saves it 
       read_html(tableLink) %>%
         html_nodes("#datatable")%>%
