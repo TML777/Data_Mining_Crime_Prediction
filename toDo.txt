@@ -5,4 +5,7 @@ add year while merging
 2. Convert all strings into numeric values
 3. Add the density for each city
 4.etc
-    
+
+5. Visualization: what has to be included
+
+
