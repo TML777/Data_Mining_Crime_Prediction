@@ -3,19 +3,25 @@ library(tidyverse)
 library(vroom)
 library(readr)
                             #save all samples in one list
-folder_path <- "C:/Users/aiger/OneDrive/Desktop/ComputerScience/CS_DM_541/ProjectDM/CSV"
-file_paths <- list.files(folder_path, pattern = "\\.csv$", full.names = TRUE)
 
+folder_path <- "C:/Users/aiger/OneDrive/Desktop/ComputerScience/CS_DM_541/ProjectDM/CSV"
+file_paths <- list.files(folder_path, pattern = "//.csv$", full.names = TRUE)
+
+#create empty list and call allSamples
 allSamples <- list()
 
+#combine all cvs files into list
 for(file_path in file_paths) {
   table_name <- tools::file_path_sans_ext(basename(file_path))
   allSamples[[table_name]] <- read.csv(file_path)
 }
+
 #delete 2014 data, keep data 2014edited
 #allSamples$crimeCalifornia2014<-NULL
 
                              #convert char to numerical values
+# deleting the "," in each column and convert it into numerical
+
 for(i in 2:12){
   allSamples$crimeCalifornia2005[[i]]<-as.numeric(gsub(",", "", allSamples$crimeCalifornia2005[[i]]))
 }
@@ -64,7 +70,7 @@ for(i in 2:ncol(allSamples$crimeCalifornia2019)){
   allSamples$crimeCalifornia2019[[i]]<-as.numeric(gsub(",", "", allSamples$crimeCalifornia2019[[i]]))
 }
 
-                                  #Create new Year attribute for each
+                                  #Create new Year attribute for each list's entry
 allSamples$crimeCalifornia2005$Years<-2005
 allSamples$crimeCalifornia2006$Years<-2006
 allSamples$crimeCalifornia2007$Years<-2007
@@ -83,11 +89,13 @@ allSamples$crimeCalifornia2019$Years<-2019
 
 
 
-#delete unnesesary columns
+                               #delete unnesesary columns
+
 allSamples$crimeCalifornia2006$X<- NULL
 allSamples$crimeCalifornia2008$X<- NULL
 allSamples$crimeCalifornia2008$X.1<- NULL
 allSamples$crimeCalifornia2008$X.2<- NULL
+allSamples$MergedCleanedData<-NULL
 
 #write.csv(allSamples$crimeCalifornia2006,"C:/Users/aiger/OneDrive/Desktop/ComputerScience/CS_DM_541/ProjectDM/CSV/crimeCalifornia2006.csv")
 #allSamples$crimeCalifornia2006<-read.csv("C:/Users/aiger/OneDrive/Desktop/ComputerScience/CS_DM_541/ProjectDM/CSV/crimeCalifornia2006.csv")
@@ -95,9 +103,12 @@ allSamples$crimeCalifornia2008$X.2<- NULL
 #allSamples$crimeCalifornia2016<-read.csv("C:/Users/aiger/OneDrive/Desktop/ComputerScience/CS_DM_541/ProjectDM/CSV/crimeCalifornia2016.csv")
 view(allSamples$crimeCalifornia2006)
 
+#combine all enties of each list
+
 combinedAllSamples <- bind_rows(allSamples, .id = "Dataset")
 view(combinedAllSamples)
 
+#too many attributes, must combine some 
 #combine rows with of city and City then create new column NameCity
 combinedAllSamples <-combinedAllSamples%>%
   mutate(NameCity = case_when(
@@ -118,6 +129,7 @@ combinedAllSamples <-combinedAllSamples%>%
     !is.na(Violent)~Violent,
     TRUE~NA_real_
   ))
+
 combinedAllSamples$violent<-NULL
 combinedAllSamples$Violent1<-NULL
 combinedAllSamples$Violent.crime<-NULL
@@ -199,7 +211,104 @@ combinedAllSamples$NameCity<-as.character(combinedAllSamples$NameCity)
 combinedAllSamples<-combinedAllSamples%>%
   filter(!if_any(Violent, is.na))
 
-write.csv(combinedAllSamples,"C:/Users/aiger/OneDrive/Desktop/ComputerScience/CS_DM_541/ProjectDM/CSV/MergedCleanedData.csv" )
+summary(combinedAllSamples)
+#looks clean, but has some NA's
+#write.csv(combinedAllSamples,"C:/Users/aiger/OneDrive/Desktop/ComputerScience/CS_DM_541/ProjectDM/CSV/MergedCleanedData.csv" )
+
+
+
+                          #deal with NA
+summary(mergedMurder)
+                      #population
+hist(mergedMurder$Population,breaks = 30, main = "Histogram with 30 bars", 
+     xlab = "Value", col = "lightblue" )
+
+#Add a normal distribution curve
+means <- mean(mergedMurder$Population, na.rm=TRUE)
+sds<- sd(mergedMurder$Population, na.rm=TRUE)
+
+curve(dnorm(x, mean=means, sd=sds) * length(mergedMurder$Population) * diff(hist(mergedMurder$Population, plot=FALSE)$breaks)[1], 
+      add=TRUE, col="red")
+         #skewed try to normalize for brtter visualization
+         #log transformation will help with right skew to more normalize
+transformData<-log(mergedMurder$Population+1)
+
+hist(transformData,breaks = 30, main = "Histogram with 30 bars", 
+     xlab = "Value", col = "lightblue" )
+
+# Add a normal distribution curve
+means <- mean(transformData, na.rm=TRUE)
+sds<- sd(transformData, na.rm=TRUE)
+
+curve(dnorm(x, mean=means, sd=sds) * length(transformData) * diff(hist(transformData, plot=FALSE)$breaks)[1], 
+      add=TRUE, col="red")
+
+#poriginal population distr is very skewed dist, thus use median 
+medians<- median(mergedMurder$Population, na.rm=TRUE)
+mergedMurder$Population[is.na(mergedMurder$Population)]<-medians
+summary(mergedMurder$Population)
+
+#view(mergedMurder)
+
+#there is only 2 burlglary,4 property creme,  thus omit 
+# Using base R to remove rows with NA in a specific column
+mergedMurder <- mergedMurder[!is.na(mergedMurder$Burglary), ]
+mergedMurder <- mergedMurder[!is.na(mergedMurder$PropertyCrime), ]
+summary(mergedMurder)
+#fill data for arson 
+hist(mergedMurder$Arson)
+means <- mean(mergedMurder$Arson, na.rm=TRUE)
+sds<- sd(mergedMurder$Arson, na.rm=TRUE)
+
+curve(dnorm(x, mean=means, sd=sds) * length(mergedMurder$Arson) * diff(hist(mergedMurder$Arson, plot=FALSE)$breaks)[1], 
+      add=TRUE, col="red")
+
+#very skewed try to normilize for better representation
+transformData<-log(mergedMurder$PropertyCrime)
+
+hist(transformData,breaks = 30, main = "Histogram with 30 bars", 
+     xlab = "Value", col = "lightblue" )
+
+# Add a normal distribution curve
+means <- mean(transformData, na.rm=TRUE)
+sds<- sd(transformData, na.rm=TRUE)
+
+curve(dnorm(x, mean=means, sd=sds) * length(transformData) * diff(hist(transformData, plot=FALSE)$breaks)[1], 
+      add=TRUE, col="red")
+
+#very skewed distribution in the beginning, thus use median 
+medians<- median(mergedMurder$Arson, na.rm=TRUE)
+mergedMurder$Arson[is.na(mergedMurder$Arson)]<-medians
+summary(mergedMurder)
+
+###########################we have no more NA's in our data#############################################
+
+#add the area 
+
+#download "C:/Users/aiger/Downloads/AreaTable.csv"
+
+area<-read.csv("C:/Users/aiger/Downloads/AreaTable.csv")
+
+#delete unnessary columns, add new columns
+area$X<-NULL
+area$X1<-NULL
+area$City<-area$X3
+area$SQmiles<- area$X2
+
+area$X2<-NULL
+area$X3<-NULL
+#delete row 1 
+area<-area[-c(1), ]
+#get ridNULL#get rid of outliers 
+
+
+#delete everything after comma , 
+area$City<-gsub(",.*", "", area$City)
+#delete sq.miles for each entry 
+area$SQmiles<-gsub("s.*", "", area$SQmiles)
+
+#convert into numeric values
+area$SQmiles<-as.numeric(area$SQmiles)
 
 
 
@@ -207,53 +316,3 @@ write.csv(combinedAllSamples,"C:/Users/aiger/OneDrive/Desktop/ComputerScience/CS
 
 
 
-
-
-
-
-# 
-# #**********************************************************************************************************
-# # Install and load vroom if you haven't already
-# file.exists("C:/Users/aiger/OneDrive/Desktop/ComputerScience/CS_DM_541/ProjectDM/CSV/crimeCalifornia2019.csv")
-# 
-# #city	population	violent	murder	rape	robbery	aggravatedassault	propertycrime	burglary	larceny-theft	motorvehicletheft	arson
-# 
-# sampleOf2019<-read.csv("C:/Users/aiger/OneDrive/Desktop/ComputerScience/CS_DM_541/ProjectDM/CSV/crimeCalifornia2019.csv")
-# #make numeric 
-# 
-# #download
-# sampleOf2019<-read.csv("C:/Users/aiger/OneDrive/Desktop/ComputerScience/CS_DM_541/ProjectDM/CSV/crimeCalifornia2019.csv")
-# #make numeric 
-# for(i in 2:12){
-#   sampleOf2019[[i]]<-as.numeric(gsub(",", "", sampleOf2019[[i]]))
-# }
-# 
-# sampleOf2018<-read.csv("C:/Users/aiger/OneDrive/Desktop/ComputerScience/CS_DM_541/ProjectDM/CSV/crimeCalifornia2018.csv")
-# for(i in 2:12) { # Change 2 to 11 for your actual case
-#   sampleOf2018[[i]] <- as.numeric(gsub(",", "", sampleOf2018[[i]]))
-# }
-# view(sampleOf2018)
-# 
-# sampleOf2014<-read.csv("C:/Users/aiger/OneDrive/Desktop/ComputerScience/CS_DM_541/ProjectDM/CSV/crimeCalifornia2014.csv")
-# sampleOf2014$Rape..revised.definition.1<-as.numeric(gsub(",","",sampleOf2014$Rape..revised.definition.1))
-# as.numeric(sampleOf2014$Rape..legacy.definition.2)
-# #substituteNA
-# sampleOf2014$Rape..revised.definition.1[is.na(sampleOf2014$Rape..revised.definition.1)]<-0
-# sampleOf2014$Rape..legacy.definition.2[is.na(sampleOf2014$Rape..legacy.definition.2)]<-0
-# 
-# #combine two columns
-# sampleOf2014$Rape..revised.definition.1<-sampleOf2014$Rape..revised.definition.1+sampleOf2014$Rape..legacy.definition.2
-# sampleOf2014$Rape..legacy.definition.2<-NULL
-# write.csv(sampleOf2014,"C:/Users/aiger/OneDrive/Desktop/ComputerScience/CS_DM_541/ProjectDM/CSV/crimeCalifornia2014Edited.csv")
-# #directory               
-# #C:/Users/aiger/OneDrive/Desktop/ComputerScience/CS_DM_541/ProjectDM/CSV
-# 
-# 
-# 
-# 
-#                 ### how to load files  All together
-# library("dplyr")                                                 
-# library("plyr")                                                
-# library("readr") 
-# murderData<-list.files(path = "C:/Users/aiger/OneDrive/Desktop/ComputerScience/CS_DM_541/ProjectDM/CSV",  
-#                       pattern = "*.csv", full.names = TRUE) %>%  lapply(read_csv) %>%bind_rows  
