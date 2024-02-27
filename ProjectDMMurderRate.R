@@ -4,8 +4,10 @@ library(vroom)
 library(readr)
                             #save all samples in one list
 
-folder_path <- "C:/Users/aiger/OneDrive/Desktop/ComputerScience/CS_DM_541/ProjectDM/CSV"
-file_paths <- list.files(folder_path, pattern = "//.csv$", full.names = TRUE)
+folder_path <-"C:\\Users\\aiger\\OneDrive\\Desktop\\ComputerScience\\CS_DM_541\\ProjectDM\\CSV"
+#folder_path <-"C:\\Users\\aiger\\OneDrive\\Desktop\\ComputerScience\\CS_DM_541\\ProjectDM\\CSV"
+file.exists(folder_path)
+file_paths <- list.files(folder_path, pattern = "\\.csv$", full.names = TRUE)
 
 #create empty list and call allSamples
 allSamples <- list()
@@ -17,7 +19,7 @@ for(file_path in file_paths) {
 }
 
 #delete 2014 data, keep data 2014edited
-#allSamples$crimeCalifornia2014<-NULL
+allSamples$crimeCalifornia2014<-NULL
 
                              #convert char to numerical values
 # deleting the "," in each column and convert it into numerical
@@ -97,18 +99,19 @@ allSamples$crimeCalifornia2008$X.1<- NULL
 allSamples$crimeCalifornia2008$X.2<- NULL
 allSamples$MergedCleanedData<-NULL
 
-#write.csv(allSamples$crimeCalifornia2006,"C:/Users/aiger/OneDrive/Desktop/ComputerScience/CS_DM_541/ProjectDM/CSV/crimeCalifornia2006.csv")
-#allSamples$crimeCalifornia2006<-read.csv("C:/Users/aiger/OneDrive/Desktop/ComputerScience/CS_DM_541/ProjectDM/CSV/crimeCalifornia2006.csv")
+#write.csv(allSamples$crimeCalifornia2006,"C:\\Users\\aiger\\OneDrive\\Desktop\\ComputerScience\\CS_DM_541\\ProjectDM\\CSV\\crimeCalifornia2006.csv")
+#allSamples$crimeCalifornia2006<-read.csv("C:\\Users\\aiger\\OneDrive\\Desktop\\ComputerScience\\CS_DM_541\\ProjectDM\\CSV\\crimeCalifornia2006.csv")
 
-#allSamples$crimeCalifornia2016<-read.csv("C:/Users/aiger/OneDrive/Desktop/ComputerScience/CS_DM_541/ProjectDM/CSV/crimeCalifornia2016.csv")
+#allSamples$crimeCalifornia2016<-read.csv("C:\\Users\\aiger\\OneDrive\\Desktop\\ComputerScience\\CS_DM_541\\ProjectDM\\CSV\\crimeCalifornia2016.csv")
 view(allSamples$crimeCalifornia2006)
 
-#combine all enties of each list
+                                 #combine all enties of each list
 
 combinedAllSamples <- bind_rows(allSamples, .id = "Dataset")
 view(combinedAllSamples)
 
-#too many attributes, must combine some 
+
+                                #too many attributes, must combine some 
 #combine rows with of city and City then create new column NameCity
 combinedAllSamples <-combinedAllSamples%>%
   mutate(NameCity = case_when(
@@ -213,15 +216,16 @@ combinedAllSamples<-combinedAllSamples%>%
 
 summary(combinedAllSamples)
 #looks clean, but has some NA's
-#write.csv(combinedAllSamples,"C:/Users/aiger/OneDrive/Desktop/ComputerScience/CS_DM_541/ProjectDM/CSV/MergedCleanedData.csv" )
+#write.csv(combinedAllSamples,"C:\\Users\\aiger\\OneDrive\\Desktop\\ComputerScience\\CS_DM_541\\ProjectDM\\CSV\\MergedCleanedData.csv" )
 
 
 
                           #deal with NA
+mergedMurder <-combinedAllSamples
 summary(mergedMurder)
-                      #population
+                         #population
 hist(mergedMurder$Population,breaks = 30, main = "Histogram with 30 bars", 
-     xlab = "Value", col = "lightblue" )
+     xlab = "Population", col = "lightblue" )
 
 #Add a normal distribution curve
 means <- mean(mergedMurder$Population, na.rm=TRUE)
@@ -234,7 +238,7 @@ curve(dnorm(x, mean=means, sd=sds) * length(mergedMurder$Population) * diff(hist
 transformData<-log(mergedMurder$Population+1)
 
 hist(transformData,breaks = 30, main = "Histogram with 30 bars", 
-     xlab = "Value", col = "lightblue" )
+     xlab = "transformed population Data", col = "lightblue" )
 
 # Add a normal distribution curve
 means <- mean(transformData, na.rm=TRUE)
@@ -255,8 +259,10 @@ summary(mergedMurder$Population)
 mergedMurder <- mergedMurder[!is.na(mergedMurder$Burglary), ]
 mergedMurder <- mergedMurder[!is.na(mergedMurder$PropertyCrime), ]
 summary(mergedMurder)
+
+
 #fill data for arson 
-hist(mergedMurder$Arson)
+hist(mergedMurder$Arson, breaks = 30)
 means <- mean(mergedMurder$Arson, na.rm=TRUE)
 sds<- sd(mergedMurder$Arson, na.rm=TRUE)
 
@@ -267,7 +273,7 @@ curve(dnorm(x, mean=means, sd=sds) * length(mergedMurder$Arson) * diff(hist(merg
 transformData<-log(mergedMurder$PropertyCrime)
 
 hist(transformData,breaks = 30, main = "Histogram with 30 bars", 
-     xlab = "Value", col = "lightblue" )
+     xlab = "transformed Data Property Crime", col = "lightblue" )
 
 # Add a normal distribution curve
 means <- mean(transformData, na.rm=TRUE)
@@ -283,13 +289,14 @@ summary(mergedMurder)
 
 ###########################we have no more NA's in our data#############################################
 
-#add the area 
+                        #add the area data    
 
-#download "C:/Users/aiger/Downloads/AreaTable.csv"
+#download "C:\\Users\\aiger\\Downloads\\AreaTable.csv"
 
-area<-read.csv("C:/Users/aiger/Downloads/AreaTable.csv")
+area<-read.csv("C:\\Users\\aiger\\Downloads\\AreaTable.csv")
 
-#delete unnessary columns, add new columns
+                    #CLEAN the area
+                   #delete unnessary columns, add new columns
 area$X<-NULL
 area$X1<-NULL
 area$City<-area$X3
@@ -311,8 +318,284 @@ area$SQmiles<-gsub("s.*", "", area$SQmiles)
 area$SQmiles<-as.numeric(area$SQmiles)
 
 
+# Extract unique city names from mergedMurder$NameCity
+murder_cities <- unique(mergedMurder$NameCity)
+murder_cities
+# Filter area dataset to only include rows where city is in murder_cities
+area <- area %>%
+  filter( City %in% murder_cities)
+
+# Remove the trailing "3" from the city names
+mergedMurder$NameCity <- gsub("3$", "", mergedMurder$NameCity)
+
+# Substitute "Yuba" with "Yuba City" in mergedMurder$NameCity
+mergedMurder$NameCity <- gsub("Yuba$", "Yuba City", mergedMurder$NameCity)
+#similarly 
+
+mergedMurder$NameCity <- gsub("Big Bear$", "Big Bear Lake", mergedMurder$NameCity)
+mergedMurder$NameCity <- gsub("Vallejo1$", "Vallejo", mergedMurder$NameCity)
+
+
+mergedMurder$NameCity <- gsub("Rancho Santa Margarit$", "Rancho Santa Margarita", mergedMurder$NameCity)
+mergedMurder$NameCity <- gsub("Nevada$", "Nevada City", mergedMurder$NameCity)
+mergedMurder$NameCity <- gsub("$", "", mergedMurder$NameCity)
+mergedMurder$NameCity <- gsub("$", "", mergedMurder$NameCity)
+
+
+                 # Merge the datasets based on matching city names
+mergedMurder<-merge(mergedMurder, area,  by.x = "NameCity", by.y = "City", all.x = TRUE)
+summary(mergedMurder)
+
+
+   # Find the cities in area that are not in mergedMurder
+notExistingCity<- anti_join(area, mergedMurder, by = c("City" = "NameCity"))$City
+notExistingCity
+
+
+unique_cities_area <- unique(area$City)
+unique_cities_merged <- unique(mergedMurder$NameCity)
+
+not_in_merged <- setdiff(unique_cities_area, unique_cities_merged)
+not_in_area <- setdiff(unique_cities_merged, unique_cities_area)
+
+not_in_merged
+not_in_area
+
+            # Filter rows where sqmiles is NA 
+(na_rows <- mergedMurder[is.na(mergedMurder$SQmiles), ])
+
+         # View the rows where NameCity is NA
+unique(na_rows$NameCity)
+
+#Notice there is some misspell in data, delete them
+
+      # Remove the trailing "3" from the city names
+mergedMurder$NameCity <- gsub("3$", "", mergedMurder$NameCity)
+
+# Now, the trailing "3" should be removmergedMurder# Now, the trailing "3" should be removed from the city names in mergedMurder$NameCity column
+
+
+# Merge the datasets based on matching city names
+mergedMurder<-merge(mergedMurder, area,  by.x = "NameCity", by.y = "City", all.x = TRUE)
+summary(mergedMurder)
+
+
+               #####DEAL with NA
+mergedMurder$SQmiles <- as.numeric(mergedMurder$SQmiles.x)
+hist(mergedMurder$SQmiles,breaks = 30, main = "Histogram with 30 bars", 
+xlab = "SQmiles", col = "lightblue" )
+
+# Add a normal distribution curve
+means <- mean(mergedMurder$SQmiles, na.rm=TRUE)
+sds<- sd(mergedMurder$SQmiles, na.rm=TRUE)
+
+curve(dnorm(x, mean=means, sd=sds) * length(mergedMurder$SQmiles) * diff(hist(mergedMurder$SQmiles, plot=FALSE)$breaks)[1], 
+      add=TRUE, col="red")
+
+
+# skewed distribution in the beginning, thus use median 
+medians<- median(mergedMurder$SQmiles, na.rm=TRUE)
+mergedMurder$SQmiles[is.na(mergedMurder$SQmiles)]<-medians
+summary(mergedMurder)
+
+                       #do not like it???????????????????ask professor
+
+####   boxplot of Population in 100K
+boxplot(mergedMurder$Population/100000,
+        main = "Boxplot of Population (in 100K)",
+        xlab = "Population",
+        ylab = "Population (in 100K)",
+        outline = TRUE,  # with outlier
+        col = "skyblue",  # Change boxplot color
+        border = "darkblue",  # Change border color
+        horizontal = TRUE)    # Display boxplot horizontally)
+
+
+boxplot(mergedMurder$Population/100000, main = "Boxplot of Population with No outlier(in 100K)",
+        xlab = "Population",
+        ylab = "Population (in 100K)",
+        outline = FALSE,  # Remove outliers from the plot
+        col = "skyblue",  # Change boxplot color
+        border = "darkblue",  # Change border color
+        horizontal = TRUE)    # Display boxplot horizontally)
+
+                         #calculate the outlier, and filter data
+# Calculate the first quartile, third quartile 
+Q1 <- quantile(mergedMurder$Population, 0.25)
+Q3 <- quantile(mergedMurder$Population, 0.75)
+# interquartile range (IQR)
+IQR <- Q3 - Q1
+
+#the lower and upper bounds, change multiplier for changing the bound
+lower <- Q1 -6 * IQR
+upper <- Q3 + 6 * IQR
+
+cleanedMurder<-mergedMurder[mergedMurder$Population>=lower & 
+                              mergedMurder$Population<=upper,]
+boxplot(cleanedMurder$Population/100000, horizontal = TRUE, 
+        main = "Less Outlier PLOT of population", xlab = "Population",
+        ylab = "Population (in 100K)"
+        )
+#nu,ber of data we lost while cleaning
+(lostDataInPop = 6487-6380  ) #107
+
+
+
+####   boxplot of  Violent
+boxplot(mergedMurder$Violent,
+        main = "Boxplot of Violent",
+        xlab = "Violent",
+        ylab = "Violent ",
+        outline = TRUE,  # with outlier
+        col = "skyblue",  # Change boxplot color
+        border = "darkblue",  # Change border color
+        horizontal = TRUE)    # Display boxplot horizontally)
+
+
+boxplot(mergedMurder$Violent, main = "Boxplot of Violent with No outlier",
+        xlab = "Violent",
+        ylab = "Violent",
+        outline = FALSE,  # Remove outliers from the plot
+        col = "skyblue",  # Change boxplot color
+        border = "darkblue",  # Change border color
+        horizontal = TRUE)    # Display boxplot horizontally)
+
+#calculate the outlier, and filter data
+# Calculate the first quartile, third quartile 
+Q1 <- quantile(mergedMurder$Violent, 0.25)
+Q3 <- quantile(mergedMurder$Violent, 0.75)
+# interquartile range (IQR)
+IQR <- Q3 - Q1
+
+#the lower and upper bounds, change multiplier for changing the bound
+lower <- Q1 -6 * IQR
+upper <- Q3 + 6 * IQR
+
+cleanedMurder<-mergedMurder[mergedMurder$Violent>=lower & 
+                              mergedMurder$Violent<=upper,]
+boxplot(cleanedMurder$Violent, horizontal = TRUE, 
+        main = "Less Outlier PLOT of Violent", xlab = "Violent",
+        ylab = "Violent"
+)
+(lostDataInV = 6487 - 6289) #198
+
+
+
+               ####   boxplot of  Robbery
+boxplot(mergedMurder$Robbery,
+        main = "Boxplot of Robbery",
+        xlab = "Robbery",
+        ylab = "Robbery ",
+        outline = TRUE,  # with outlier
+        col = "skyblue",  # Change boxplot color
+        border = "darkblue",  # Change border color
+        horizontal = TRUE)    # Display boxplot horizontally)
+
+
+boxplot(mergedMurder$Robbery, main = "Boxplot of Robbery with No outlier",
+        xlab = "Robbery",
+        ylab = "Robbery",
+        outline = FALSE,  # Remove outliers from the plot
+        col = "skyblue",  # Change boxplot color
+        border = "darkblue",  # Change border color
+        horizontal = TRUE)    # Display boxplot horizontally)
+
+#calculate the outlier, and filter data
+# Calculate the first quartile, third quartile 
+Q1 <- quantile(mergedMurder$Robbery, 0.25)
+Q3 <- quantile(mergedMurder$Robbery, 0.75)
+# interquartile range (IQR)
+IQR <- Q3 - Q1
+
+#the lower and upper bounds, change multiplier for changing the bound
+lower <- Q1 -6 * IQR
+upper <- Q3 + 6 * IQR
+
+cleanedMurder<-mergedMurder[mergedMurder$Robbery>=lower & 
+                              mergedMurder$Robbery<=upper,]
+boxplot(cleanedMurder$Robbery, horizontal = TRUE, 
+        main = "Less Outlier PLOT of Robbery", xlab = "Robbery",
+        ylab = " Rpbbery"
+)
 
 
 
 
+                ####   boxplot of  PropertyCrime
+boxplot(mergedMurder$PropertyCrime,
+        main = "Boxplot of PropertyCrime",
+        xlab = "PropertyCrime",
+        ylab = "PropertyCrime ",
+        outline = TRUE,  # with outlier
+        col = "skyblue",  # Change boxplot color
+        border = "darkblue",  # Change border color
+        horizontal = TRUE)    # Display boxplot horizontally)
+
+
+boxplot(mergedMurder$PropertyCrime, main = "Boxplot of PropertyCrime with No outlier",
+        xlab = "PropertyCrime",
+        ylab = "PropertyCrime",
+        outline = FALSE,  # Remove outliers from the plot
+        col = "skyblue",  # Change boxplot color
+        border = "darkblue",  # Change border color
+        horizontal = TRUE)    # Display boxplot horizontally)
+
+#calculate the outlier, and filter data
+# Calculate the first quartile, third quartile 
+Q1 <- quantile(mergedMurder$PropertyCrime, 0.25)
+Q3 <- quantile(mergedMurder$PropertyCrime, 0.75)
+# interquartile range (IQR)
+IQR <- Q3 - Q1
+
+#the lower and upper bounds, change multiplier for changing the bound
+lower <- Q1 -6 * IQR
+upper <- Q3 + 6 * IQR
+
+cleanedMurder<-mergedMurder[mergedMurder$PropertyCrime>=lower & 
+                              mergedMurder$PropertyCrime<=upper,]
+boxplot(cleanedMurder$PropertyCrime, horizontal = TRUE, 
+        main = "Less Outlier PLOT of PropertyCrime", xlab = "PropertyCrime",
+        ylab = "Property Crime"
+)
+
+
+                ####   boxplot of  Murder
+boxplot(mergedMurder$Murder,
+        main = "Boxplot of Murder",
+        xlab = "Murder",
+        ylab = "Murder ",
+        outline = TRUE,  # with outlier
+        col = "skyblue",  # Change boxplot color
+        border = "darkblue",  # Change border color
+        horizontal = TRUE)    # Display boxplot horizontally)
+
+
+boxplot(mergedMurder$Murder, main = "Boxplot of Murder with No outlier",
+        xlab = "Murder",
+        ylab = "Murder",
+        outline = FALSE,  # Remove outliers from the plot
+        col = "skyblue",  # Change boxplot color
+        border = "darkblue",  # Change border color
+        horizontal = TRUE)    # Display boxplot horizontally)
+
+#calculate the outlier, and filter data
+# Calculate the first quartile, third quartile 
+Q1 <- quantile(mergedMurder$Murder, 0.25)
+Q3 <- quantile(mergedMurder$Murder, 0.75)
+# interquartile range (IQR)
+IQR <- Q3 - Q1
+
+#the lower and upper bounds, change multiplier for changing the bound
+lower <- Q1 -6 * IQR
+upper <- Q3 + 6 * IQR
+
+cleanedMurder<-mergedMurder[mergedMurder$Murder>=lower & 
+                              mergedMurder$Murder<=upper,]
+boxplot(cleanedMurder$Murder, horizontal = TRUE, 
+        main = "Less Outlier PLOT of Murder", xlab = "Murder",
+        ylab = "Murder"
+)
+
+
+#write.csv(mergedMurder,"C:\\Users\\aiger\\OneDrive\\Desktop\\ComputerScience\\CS_DM_541\\ProjectDM\\CSV\\CleanedDataWithOutlier.csv" )
 
