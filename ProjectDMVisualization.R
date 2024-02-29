@@ -2,21 +2,18 @@
 install.packages("scatterplot3d")
 install.packages("plotly")
 
-# library(EnvStats)
+library(EnvStats)
 library(scatterplot3d)
 library(ggplot2)
 library(plotly)
-
+library(corrplot)
 
 ###download already merged data
-
-mergedMurder<- read.csv("C:/Users/aiger/OneDrive/Desktop/ComputerScience/CS_DM_541/ProjectDM/CleanedDataWithOutlier.csv")
-
+mergedMurder<- read.csv("C:\\Users\\aiger\\OneDrive\\Desktop\\ComputerScience\\CS_DM_541\\ProjectDM\\CSV\\CleanedDataWithOutlier.csv")
 #sort the column based on alphabet
 mergedMurder<-mergedMurder[order(mergedMurder$NameCity),]
 
 summary(mergedMurder)
-
 
 # Create a new column for the city numbers
 mergedMurder$CityNumber <- as.numeric(factor(mergedMurder$NameCity, 
@@ -25,24 +22,38 @@ mergedMurder$CityNumber <- as.numeric(factor(mergedMurder$NameCity,
 # Print the first few rows to verify the assignment
 head(mergedMurder)
 
-
+#
+mergedMurder$X<-NULL
+# Create a new column for the Density
+mergedMurder$Density<- mergedMurder$Population/mergedMurder$SQmiles
+#summary(mergedMurder)
 
 # Remove rows with missing or infinite values
-mergedMurder <- mergedMurder[complete.cases(mergedMurder), ]
+#mergedMurder <- mergedMurder[complete.cases(mergedMurder), ]
 
-mergedMurder$X<-NULL
 #converts some data into numeric
 mergedMurder$Murder<- as.numeric(mergedMurder$Murder)
 mergedMurder$Years<- as.numeric(mergedMurder$Years)
 
 
 
-####   boxplot of  Murder
+####   boxplot of  Murder with some outlier
 boxplot(mergedMurder$Murder,
         main = "Boxplot of Murder",
         xlab = "Murder",
         ylab = "Murder ",
-        outline = FALSE,  # with outlier
+        outline = TRUE,  # with outlier
+        col = "skyblue",  # Change boxplot color
+        border = "darkblue",  # Change border color
+        horizontal = TRUE)    # Display boxplot horizontally)
+
+
+####   boxplot of  Murder with no outlier
+boxplot(mergedMurder$Murder,
+        main = "Boxplot of Murder",
+        xlab = "Murder",
+        ylab = "Murder ",
+        outline = FALSE,  # with no outlier
         col = "skyblue",  # Change boxplot color
         border = "darkblue",  # Change border color
         horizontal = TRUE)    # Display boxplot horizontally)
@@ -90,6 +101,8 @@ ViolentBoxPlot<-boxplot(mergedMurder$Violent, main = "Boxplot of Violent with No
         border = "darkblue",  # Change border color
         horizontal = TRUE)    # Display boxplot horizontally)
 
+##### boxplot of the ARSON
+
 AraonBoxPlot<-boxplot(mergedMurder$Arson, main = "Boxplot of Arson with No outlier",
         xlab = "Arson",
         ylab = "Arson",
@@ -101,11 +114,13 @@ AraonBoxPlot<-boxplot(mergedMurder$Arson, main = "Boxplot of Arson with No outli
 
 
 
-                       # Basic Scatter plot and QQplot 
+                       # Basic Scatter plot and QQ-plot 
 
 
 plot(mergedMurder$Population, mergedMurder$Murder, main = "Scatter plot of Population vs Murder", 
      xlab = "Population", ylab = "Murder number", col = "blue")
+# Regression line by using 
+abline(lm(mergedMurder$Murder ~ mergedMurder$Population), col = "red")
 qqplot(mergedMurder$Population, mergedMurder$Murder,  main = "QQ plot of Population vs Murder", 
        xlab = "Population", ylab = "Murder number", col = "black")
 # Regression line by using 
@@ -147,7 +162,8 @@ abline(lm(mergedMurder$Murder ~ mergedMurder$PropertyCrime), col = "red")
 
 
 #######################################################################################
-#                                Population vs Murder"
+#                     "Population vs Murder" other method of implimenting
+
 ggplot(mergedMurder, aes(x =Population/100000, y = Murder)) + 
   geom_point() + 
   theme_minimal() + 
@@ -160,7 +176,7 @@ ggplot(mergedMurder, aes(x = Population/100000, y = Murder)) +
   theme_minimal() + 
   labs(title = "Population vs Murder", x = "pop", y = "murder")
 
-# Correlation Analysis
+# Correlation Analysis 
 cor.test(mergedMurder$Population, mergedMurder$Murder, use = "complete.obs")
 #
 
@@ -183,9 +199,15 @@ ggplot(mergedMurder, aes(x = Violent, y = Murder)) +
 cor.test(mergedMurder$Violent, mergedMurder$Murder, use = "complete.obs")
 
 
+
+
+#######################################################################################
 # Check data types
 str(mergedMurder)
-
+#check 
+length(mergedMurder$CityNumber)
+length(mergedMurder$Years)
+length(mergedMurder$Murder)
 
 
 #data cube :city, year, #murders
@@ -197,7 +219,7 @@ with(mergedMurder, {scatterplot3d(x= mergedMurder$CityNumber,
 #library(scatterplot3d) Will help to darw 3d
 
 
-#3d scatter plot 
+                       #3d scatter plot 
 with(mergedMurder, {
   # Create the plot
   s3d <- scatterplot3d(x = mergedMurder$CityNumber,  # City
@@ -222,9 +244,9 @@ with(mergedMurder, {
            col = "red", 
            pch = 16)
 })
+###############################looks horrible try other method
 
 
-#************************************
 #library(plotly) - will give to draw 3D rotate it, zoom it 
 
 # 3D scatter plot
@@ -251,6 +273,14 @@ plot_ly(mergedMurder, x = ~NameCity, y = ~Years, z = ~PropertyCrime, color = ~Mu
   layout(scene = list(xaxis = list(title = "City"), 
                       yaxis = list(title = "Year"), 
                       zaxis = list(title = "PropertyCrime"))) %>%
+  colorbar(title = "Number of Murders")
+
+# 3D scatter plot
+plot_ly(mergedMurder, x = ~NameCity, y = ~Years, z = ~Density, color = ~Murder, 
+        colors = "Reds", marker = list(size = 16), type = "scatter3d", mode = "markers") %>%
+  layout(scene = list(xaxis = list(title = "City"), 
+                      yaxis = list(title = "Year"), 
+                      zaxis = list(title = "Density"))) %>%
   colorbar(title = "Number of Murders")
 
 #2d scatter plot
@@ -280,10 +310,62 @@ plot_ly(mergedMurder, x = ~NameCity, y = ~Population/100000, color = ~MurderRang
 #############no change, ask professor
 
 
+                # Calculate the correlation matrix 
 
+correlation_matrix <- cor(mergedMurder)
+#check the structure
+str(mergedMurder)
+
+numericMergedMurder<-mergedMurder[sapply(mergedMurder, is.numeric)]
+correlation_matrix<-cor(numericMergedMurder)
+correlation_matrix
+
+
+# Visualize the correlation matrix
+
+corrplot(correlation_matrix, method = "circle", 
+        # type = "lower",
+         tl.col = "black",
+         tl.srt = 45,
+         diag = TRUE,
+         #addCoef.col = "yellow",
+         number.cex = 0.7,
+         title = "Correlation Plot",
+         tl.pos = "lt",
+         mar = c(0,0,1,0), 
+         addgrid.col = "gray" # Add grid lines for better readability 
+)
+
+#somehow gives me warning
 
 #######
-#scatter plot -done
-#3D scatter plot  done
-#pixel oriented 
-#clustering 
+
+#Normalize data
+minMaxScale<- function(x){
+ (x-min(x))/(max(x)-min(x))
+}
+
+normMergedMurder<- as.data.frame((lapply(numericMergedMurder, minMaxScale)))
+
+head(normMergedMurder)
+#run corralation matrix in normazided data
+correlation_matrix<-cor(numericMergedMurder)
+correlation_matrix
+
+# Visualize the correlation matrix
+
+corrplot(correlation_matrix, method = "square", 
+         # type = "lower",
+         tl.col = "black",
+         tl.srt = 45,
+         diag = TRUE,
+         #addCoef.col = "yellow",
+         number.cex = 0.7,
+         title = "Correlation Plot for Normalized Data",
+         tl.pos = "lt",
+         mar = c(0,0,1,0), 
+         addgrid.col = "gray"  # Add grid lines for better readability
+        )
+
+
+#write.csv(normMergedMurder,"C:/Users/aiger/OneDrive/Desktop/ComputerScience/CS_DM_541/ProjectDM/CSV/NormalizedDataMurder.csv")
