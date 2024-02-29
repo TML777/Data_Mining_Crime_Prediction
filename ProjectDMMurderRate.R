@@ -18,59 +18,80 @@ for(file_path in file_paths) {
   allSamples[[table_name]] <- read.csv(file_path)
 }
 
-#delete 2014 data, keep data 2014edited
-allSamples$crimeCalifornia2014<-NULL
 
+#                              #convert City into String
+# allSamples$crimeCalifornia2005$City<-as.character(allSamples$crimeCalifornia2005$City)
+# allSamples$crimeCalifornia2006$City<-as.character(allSamples$crimeCalifornia2006$City)
+# allSamples$crimeCalifornia2007$City<-as.character(allSamples$crimeCalifornia2007$City)
+# allSamples$crimeCalifornia2008$City<-as.character(allSamples$crimeCalifornia2008$City)
+# allSamples$crimeCalifornia2009$City<-as.character(allSamples$crimeCalifornia2009$City)
+# allSamples$crimeCalifornia2010$City<-as.character(allSamples$crimeCalifornia2010$City)
+# allSamples$crimeCalifornia2011$City<-as.character(allSamples$crimeCalifornia2011$City)
+# allSamples$crimeCalifornia2012$City<-as.character(allSamples$crimeCalifornia2012$City)
+# allSamples$crimeCalifornia2013$City<-as.character(allSamples$crimeCalifornia2013$City)
+# allSamples$crimeCalifornia2014$City<-as.character(allSamples$crimeCalifornia2014$City)
+# allSamples$crimeCalifornia2015$City<-as.character(allSamples$crimeCalifornia2015$City)
+# allSamples$crimeCalifornia2016$City<-as.character(allSamples$crimeCalifornia2016$City)
+# allSamples$crimeCalifornia2017$City<-as.character(allSamples$crimeCalifornia2017$City)
+# allSamples$crimeCalifornia2018$City<-as.character(allSamples$crimeCalifornia2018$City)
+# allSamples$crimeCalifornia2019$City<-as.character(allSamples$crimeCalifornia2019$City)
+
+str(allSamples$crimeCalifornia2006$City)
                              #convert char to numerical values
+
+
+
 # deleting the "," in each column and convert it into numerical
 
-for(i in 2:12){
+
+for(i in 4:ncol(allSamples$crimeCalifornia2005)){
   allSamples$crimeCalifornia2005[[i]]<-as.numeric(gsub(",", "", allSamples$crimeCalifornia2005[[i]]))
 }
 
-for(i in 3:ncol(allSamples$crimeCalifornia2006)){
+for(i in 4:ncol(allSamples$crimeCalifornia2006)){
   allSamples$crimeCalifornia2006[[i]]<-as.numeric(gsub(",", "", allSamples$crimeCalifornia2006[[i]]))
 }
-view(allSamples$crimeCalifornia2006)
-for(i in 2:ncol(allSamples$crimeCalifornia2007)){
+
+for(i in 4:ncol(allSamples$crimeCalifornia2007)){
   allSamples$crimeCalifornia2007[[i]]<-as.numeric(gsub(",", "", allSamples$crimeCalifornia2007[[i]]))
 }
-for(i in 2:ncol(allSamples$crimeCalifornia2008)){
+for(i in 4:ncol(allSamples$crimeCalifornia2008)){
   allSamples$crimeCalifornia2008[[i]]<-as.numeric(gsub(",", "", allSamples$crimeCalifornia2008[[i]]))
 }
-for(i in 2:ncol(allSamples$crimeCalifornia2009)){
+for(i in 4:ncol(allSamples$crimeCalifornia2009)){
   allSamples$crimeCalifornia2009[[i]]<-as.numeric(gsub(",", "", allSamples$crimeCalifornia2009[[i]]))
 }
-for(i in 2:ncol(allSamples$crimeCalifornia2010)){
+for(i in 4:ncol(allSamples$crimeCalifornia2010)){
   allSamples$crimeCalifornia2010[[i]]<-as.numeric(gsub(",", "", allSamples$crimeCalifornia2010[[i]]))
 }
-for(i in 2:ncol(allSamples$crimeCalifornia2011)){
+for(i in 4:ncol(allSamples$crimeCalifornia2011)){
   allSamples$crimeCalifornia2011[[i]]<-as.numeric(gsub(",", "", allSamples$crimeCalifornia2011[[i]]))
 }
-for(i in 2:ncol(allSamples$crimeCalifornia2012)){
+for(i in 4:ncol(allSamples$crimeCalifornia2012)){
   allSamples$crimeCalifornia2012[[i]]<-as.numeric(gsub(",", "", allSamples$crimeCalifornia2012[[i]]))
 }
-for(i in 2:ncol(allSamples$crimeCalifornia2013)){
+for(i in 4:ncol(allSamples$crimeCalifornia2013)){
   allSamples$crimeCalifornia2013[[i]]<-as.numeric(gsub(",", "", allSamples$crimeCalifornia2013[[i]]))
 }
-for(i in 2:ncol(allSamples$crimeCalifornia2014Edited)){
-  allSamples$crimeCalifornia2014Edited[[i]]<-as.numeric(gsub(",", "", allSamples$crimeCalifornia2014Edited[[i]]))
+for(i in 4:ncol(allSamples$crimeCalifornia2014)){
+  allSamples$crimeCalifornia2014[[i]]<-as.numeric(gsub(",", "", allSamples$crimeCalifornia2014[[i]]))
 }
-for(i in 2:ncol(allSamples$crimeCalifornia2015)){
+for(i in 4:ncol(allSamples$crimeCalifornia2015)){
   allSamples$crimeCalifornia2015[[i]]<-as.numeric(gsub(",", "", allSamples$crimeCalifornia2015[[i]]))
 }
-for(i in 2:ncol(allSamples$crimeCalifornia2016)){
+for(i in 4:ncol(allSamples$crimeCalifornia2016)){
   allSamples$crimeCalifornia2016[[i]]<-as.numeric(gsub(",", "", allSamples$crimeCalifornia2016[[i]]))
 }
-for(i in 2:ncol(allSamples$crimeCalifornia2017)){
+for(i in 4:ncol(allSamples$crimeCalifornia2017)){
   allSamples$crimeCalifornia2017[[i]]<-as.numeric(gsub(",", "", allSamples$crimeCalifornia2017[[i]]))
 }
-for(i in 2:ncol(allSamples$crimeCalifornia2018)){
+for(i in 4:ncol(allSamples$crimeCalifornia2018)){
   allSamples$crimeCalifornia2018[[i]]<-as.numeric(gsub(",", "", allSamples$crimeCalifornia2018[[i]]))
 }
-for(i in 2:ncol(allSamples$crimeCalifornia2019)){
+for(i in 4:ncol(allSamples$crimeCalifornia2019)){
   allSamples$crimeCalifornia2019[[i]]<-as.numeric(gsub(",", "", allSamples$crimeCalifornia2019[[i]]))
 }
+#view( allSamples$crimeCalifornia2019)
 
                                   #Create new Year attribute for each list's entry
 allSamples$crimeCalifornia2005$Years<-2005
@@ -82,7 +103,7 @@ allSamples$crimeCalifornia2010$Years<-2010
 allSamples$crimeCalifornia2011$Years<-2011
 allSamples$crimeCalifornia2012$Years<-2012
 allSamples$crimeCalifornia2013$Years<-2013
-allSamples$crimeCalifornia2014Edited$Years<-2014
+allSamples$crimeCalifornia2014$Years<-2014
 allSamples$crimeCalifornia2015$Years<-2015
 allSamples$crimeCalifornia2016$Years<-2016
 allSamples$crimeCalifornia2017$Years<-2017
@@ -91,81 +112,83 @@ allSamples$crimeCalifornia2019$Years<-2019
 
 
 
-                               #delete unnesesary columns
-
-allSamples$crimeCalifornia2006$X<- NULL
-allSamples$crimeCalifornia2008$X<- NULL
-allSamples$crimeCalifornia2008$X.1<- NULL
-allSamples$crimeCalifornia2008$X.2<- NULL
-allSamples$MergedCleanedData<-NULL
-
 #write.csv(allSamples$crimeCalifornia2006,"C:\\Users\\aiger\\OneDrive\\Desktop\\ComputerScience\\CS_DM_541\\ProjectDM\\CSV\\crimeCalifornia2006.csv")
 #allSamples$crimeCalifornia2006<-read.csv("C:\\Users\\aiger\\OneDrive\\Desktop\\ComputerScience\\CS_DM_541\\ProjectDM\\CSV\\crimeCalifornia2006.csv")
 
 #allSamples$crimeCalifornia2016<-read.csv("C:\\Users\\aiger\\OneDrive\\Desktop\\ComputerScience\\CS_DM_541\\ProjectDM\\CSV\\crimeCalifornia2016.csv")
-view(allSamples$crimeCalifornia2006)
+#view(allSamples$crimeCalifornia2006)
 
                                  #combine all enties of each list
 
 combinedAllSamples <- bind_rows(allSamples, .id = "Dataset")
 view(combinedAllSamples)
 
+                 #delete unnessesary columns
+combinedAllSamples$X.1<-NULL
+combinedAllSamples$X<-NULL
+combinedAllSamples$Dataset<-NULL
+
+
+
+# write.csv(combinedAllSamples, "C:\\Users\\aiger\\OneDrive\\Desktop\\ComputerScience\\CS_DM_541\\ProjectDM\\combinedNotCleanedMurderData.csv")
+
 
                                 #too many attributes, must combine some 
 #combine rows with of city and City then create new column NameCity
 combinedAllSamples <-combinedAllSamples%>%
   mutate(NameCity = case_when(
-    !is.na(city)~city,
+    !is.na(State)~State,
     !is.na(City)~City,
     TRUE~NA_character_
-  ))%>%select(-City, -city)#delete original city and City
-
-combinedAllSamples$Violent.crime<-as.numeric(combinedAllSamples$Violent.crime)
-combinedAllSamples$violent<-as.numeric(combinedAllSamples$violent)
-combinedAllSamples$Violent<-as.numeric(combinedAllSamples$Violent)
+  ))%>%select(-City, -State)#delete original city and City
 
 
-combinedAllSamples <-combinedAllSamples%>%
+#combinedAllSamples$Violent.crime<-as.numeric(combinedAllSamples$Violent.crime)
+
+combinedAllSamples <- combinedAllSamples %>%
   mutate(Violent = case_when(
-    !is.na(violent)~violent,
-    !is.na(Violent.crime)~Violent.crime,
-    !is.na(Violent)~Violent,
-    TRUE~NA_real_
+    !is.na(Violentcrime) ~ Violentcrime,
+    !is.na(Violent.crime) ~ Violent.crime,
+    !is.na(Violent..crime) ~ Violent..crime,
+    TRUE ~ NA_real_
   ))
 
-combinedAllSamples$violent<-NULL
-combinedAllSamples$Violent1<-NULL
+combinedAllSamples$Violentcrime<-NULL
 combinedAllSamples$Violent.crime<-NULL
+combinedAllSamples$Violent..crime<-NULL
 
-combinedAllSamples <-combinedAllSamples%>%
-  mutate(Population = case_when(
-    !is.na(Population)~Population,
-    !is.na(population)~population,
-    TRUE~NA_real_
-  ))%>%select(-population)
+# combinedAllSamples <-combinedAllSamples%>%
+#   mutate(Population = case_when(
+#     !is.na(Population)~Population,
+#     !is.na(population)~population,
+#     TRUE~NA_real_
+#   ))%>%select(-population)
 
 combinedAllSamples <-combinedAllSamples%>%
   mutate(Murder = case_when(
-    !is.na(Murder)~Murder,
-    !is.na(murder)~murder,
+    !is.na(Murder.and..nonnegligent..manslaughter)~Murder.and..nonnegligent..manslaughter,
     !is.na(Murder.and.nonnegligent.manslaughter)~Murder.and.nonnegligent.manslaughter,
+    !is.na(Murder.andnonnegligentmanslaughter)~Murder.andnonnegligentmanslaughter,
     TRUE~NA_real_
-  ))%>%select(-Murder.and.nonnegligent.manslaughter,-murder)
+  ))%>%select(-Murder.andnonnegligentmanslaughter,-Murder.and.nonnegligent.manslaughter,
+              -Murder.and..nonnegligent..manslaughter)
 
+summary(combinedAllSamples$Murder)
 combinedAllSamples <-combinedAllSamples%>%
   mutate(Rape = case_when(
+    !is.na(Rape1)~Rape1,
     !is.na(Forcible.rape)~Forcible.rape,
-    !is.na(rape)~rape,
-    !is.na(Rape..legacy.definition.2)~Rape..legacy.definition.2,
-    !is.na(Rape..revised.definition.1)~Rape..revised.definition.1,
+    !is.na(Forciblerape)~Forciblerape,
+    !is.na(Rape.reviseddefinition.1)~Rape.reviseddefinition.1,
+    !is.na(Rape.reviseddefinition1.)~Rape.reviseddefinition1.,
+    !is.na(Rape.legacydefinition.2)~Rape.legacydefinition.2,
+    !is.na(Rape.legacydefinition2.)~Rape.legacydefinition2.,
     TRUE~NA_real_
-  ))%>%select(-rape, -Forcible.rape, -Rape..revised.definition.1, -Rape..legacy.definition.2)
+  ))%>%select(-Forcible.rape, -Forciblerape, -Rape.reviseddefinition.1, 
+              -Rape.reviseddefinition1.,-Rape.legacydefinition.2, 
+              -Rape.legacydefinition2., -Rape1)
 
-combinedAllSamples <-combinedAllSamples%>%
-  mutate(Robbery = case_when(
-    !is.na(Robbery)~Robbery,
-    !is.na(robbery)~robbery,
-    TRUE~NA_real_))%>%select(-robbery)
+#Robbery was good
 
 
 combinedAllSamples <-combinedAllSamples%>%
@@ -174,11 +197,7 @@ combinedAllSamples <-combinedAllSamples%>%
     !is.na(Aggravatedassault)~Aggravatedassault,
     TRUE~NA_real_))%>%select(-Aggravated.assault, -Aggravatedassault)
 
-combinedAllSamples <-combinedAllSamples%>%
-  mutate(Burglary = case_when(
-    !is.na(burglary)~burglary,
-    !is.na(Burglary)~Burglary,
-    TRUE~NA_real_))%>%select(-burglary)
+#burglary was good
 
 combinedAllSamples <-combinedAllSamples%>%
   mutate(PropertyCrime = case_when(
@@ -187,35 +206,25 @@ combinedAllSamples <-combinedAllSamples%>%
     TRUE~NA_real_))%>%select(-Propertycrime, -Property.crime)
 
 
-
 combinedAllSamples <-combinedAllSamples%>%
   mutate(Theft = case_when(
-    !is.na(Larceny.threft)~Larceny.threft,
     !is.na(Larceny.theft)~Larceny.theft,
     !is.na(Larceny..theft)~Larceny..theft,
-    !is.na(Motor.Vehicle.threft)~Motor.Vehicle.threft,
     !is.na(Motor.vehicle.theft)~Motor.vehicle.theft,
+    !is.na(Motor..vehicle.theft)~Motor..vehicle.theft,
     !is.na(Motorvehicletheft)~Motorvehicletheft,
-    TRUE~NA_real_))%>%select(-Larceny.threft, -Larceny.theft, -Larceny..theft,
-                             -Motor.Vehicle.threft, -Motor.vehicle.theft, -Motorvehicletheft)
+    TRUE~NA_real_))%>%select(-Larceny.theft, -Larceny..theft,
+                             -Motor..vehicle.theft, -Motor.vehicle.theft, -Motorvehicletheft)
 
 combinedAllSamples <-combinedAllSamples%>%
   mutate(Arson = case_when(
     !is.na(Arson)~Arson,
-    !is.na(arson)~arson,
     !is.na(Arson1)~Arson1,
-    !is.na(even.7)~even.7,
-    TRUE~NA_real_))%>%select(-arson, -Arson1, -even.7)
+    TRUE~NA_real_))%>%select(-Arson1)
 
-combinedAllSamples<-combinedAllSamples%>%
-  filter(!if_any(NameCity, is.na))
-
-combinedAllSamples$NameCity<-as.character(combinedAllSamples$NameCity)
-combinedAllSamples<-combinedAllSamples%>%
-  filter(!if_any(Violent, is.na))
 
 summary(combinedAllSamples)
-#looks clean, but has some NA's
+
 #write.csv(combinedAllSamples,"C:\\Users\\aiger\\OneDrive\\Desktop\\ComputerScience\\CS_DM_541\\ProjectDM\\CSV\\MergedCleanedData.csv" )
 
 
@@ -258,6 +267,8 @@ summary(mergedMurder$Population)
 # Using base R to remove rows with NA in a specific column
 mergedMurder <- mergedMurder[!is.na(mergedMurder$Burglary), ]
 mergedMurder <- mergedMurder[!is.na(mergedMurder$PropertyCrime), ]
+mergedMurder <- mergedMurder[!is.na(mergedMurder$Assault), ]
+mergedMurder <- mergedMurder[!is.na(mergedMurder$Violent), ]
 summary(mergedMurder)
 
 
@@ -316,7 +327,7 @@ area$SQmiles<-gsub("s.*", "", area$SQmiles)
 
 #convert into numeric values
 area$SQmiles<-as.numeric(area$SQmiles)
-
+#area$Density<-as.numeric(area$SQmiles/area$SQmiles)
 
 # Extract unique city names from mergedMurder$NameCity
 murder_cities <- unique(mergedMurder$NameCity)
@@ -380,8 +391,8 @@ mergedMurder<-merge(mergedMurder, area,  by.x = "NameCity", by.y = "City", all.x
 summary(mergedMurder)
 
 
-               #####DEAL with NA
-mergedMurder$SQmiles <- as.numeric(mergedMurder$SQmiles.x)
+               #####DEAL with NA###SQmiles##DEAL with NA
+mergedMurder$SQmiles <- as.numeric(mergedMurder$SQmiles)
 hist(mergedMurder$SQmiles,breaks = 30, main = "Histogram with 30 bars", 
 xlab = "SQmiles", col = "lightblue" )
 
@@ -397,9 +408,8 @@ curve(dnorm(x, mean=means, sd=sds) * length(mergedMurder$SQmiles) * diff(hist(me
 medians<- median(mergedMurder$SQmiles, na.rm=TRUE)
 mergedMurder$SQmiles[is.na(mergedMurder$SQmiles)]<-medians
 summary(mergedMurder)
-
-                       #do not like it???????????????????ask professor
-
+                        ############NO MORE NA#######################
+                       
 ####   boxplot of Population in 100K
 boxplot(mergedMurder$Population/100000,
         main = "Boxplot of Population (in 100K)",
@@ -419,6 +429,8 @@ boxplot(mergedMurder$Population/100000, main = "Boxplot of Population with No ou
         border = "darkblue",  # Change border color
         horizontal = TRUE)    # Display boxplot horizontally)
 
+
+
                          #calculate the outlier, and filter data
 # Calculate the first quartile, third quartile 
 Q1 <- quantile(mergedMurder$Population, 0.25)
@@ -427,18 +439,17 @@ Q3 <- quantile(mergedMurder$Population, 0.75)
 IQR <- Q3 - Q1
 
 #the lower and upper bounds, change multiplier for changing the bound
-lower <- Q1 -6 * IQR
-upper <- Q3 + 6 * IQR
+lower <- Q1 -3* IQR
+upper <- Q3 + 3 * IQR
 
 cleanedMurder<-mergedMurder[mergedMurder$Population>=lower & 
                               mergedMurder$Population<=upper,]
+
 boxplot(cleanedMurder$Population/100000, horizontal = TRUE, 
         main = "Less Outlier PLOT of population", xlab = "Population",
         ylab = "Population (in 100K)"
         )
 #nu,ber of data we lost while cleaning
-(lostDataInPop = 6487-6380  ) #107
-
 
 
 ####   boxplot of  Violent
@@ -460,26 +471,6 @@ boxplot(mergedMurder$Violent, main = "Boxplot of Violent with No outlier",
         border = "darkblue",  # Change border color
         horizontal = TRUE)    # Display boxplot horizontally)
 
-#calculate the outlier, and filter data
-# Calculate the first quartile, third quartile 
-Q1 <- quantile(mergedMurder$Violent, 0.25)
-Q3 <- quantile(mergedMurder$Violent, 0.75)
-# interquartile range (IQR)
-IQR <- Q3 - Q1
-
-#the lower and upper bounds, change multiplier for changing the bound
-lower <- Q1 -6 * IQR
-upper <- Q3 + 6 * IQR
-
-cleanedMurder<-mergedMurder[mergedMurder$Violent>=lower & 
-                              mergedMurder$Violent<=upper,]
-boxplot(cleanedMurder$Violent, horizontal = TRUE, 
-        main = "Less Outlier PLOT of Violent", xlab = "Violent",
-        ylab = "Violent"
-)
-(lostDataInV = 6487 - 6289) #198
-
-
 
                ####   boxplot of  Robbery
 boxplot(mergedMurder$Robbery,
@@ -500,27 +491,6 @@ boxplot(mergedMurder$Robbery, main = "Boxplot of Robbery with No outlier",
         border = "darkblue",  # Change border color
         horizontal = TRUE)    # Display boxplot horizontally)
 
-#calculate the outlier, and filter data
-# Calculate the first quartile, third quartile 
-Q1 <- quantile(mergedMurder$Robbery, 0.25)
-Q3 <- quantile(mergedMurder$Robbery, 0.75)
-# interquartile range (IQR)
-IQR <- Q3 - Q1
-
-#the lower and upper bounds, change multiplier for changing the bound
-lower <- Q1 -6 * IQR
-upper <- Q3 + 6 * IQR
-
-cleanedMurder<-mergedMurder[mergedMurder$Robbery>=lower & 
-                              mergedMurder$Robbery<=upper,]
-boxplot(cleanedMurder$Robbery, horizontal = TRUE, 
-        main = "Less Outlier PLOT of Robbery", xlab = "Robbery",
-        ylab = " Rpbbery"
-)
-
-
-
-
                 ####   boxplot of  PropertyCrime
 boxplot(mergedMurder$PropertyCrime,
         main = "Boxplot of PropertyCrime",
@@ -539,24 +509,6 @@ boxplot(mergedMurder$PropertyCrime, main = "Boxplot of PropertyCrime with No out
         col = "skyblue",  # Change boxplot color
         border = "darkblue",  # Change border color
         horizontal = TRUE)    # Display boxplot horizontally)
-
-#calculate the outlier, and filter data
-# Calculate the first quartile, third quartile 
-Q1 <- quantile(mergedMurder$PropertyCrime, 0.25)
-Q3 <- quantile(mergedMurder$PropertyCrime, 0.75)
-# interquartile range (IQR)
-IQR <- Q3 - Q1
-
-#the lower and upper bounds, change multiplier for changing the bound
-lower <- Q1 -6 * IQR
-upper <- Q3 + 6 * IQR
-
-cleanedMurder<-mergedMurder[mergedMurder$PropertyCrime>=lower & 
-                              mergedMurder$PropertyCrime<=upper,]
-boxplot(cleanedMurder$PropertyCrime, horizontal = TRUE, 
-        main = "Less Outlier PLOT of PropertyCrime", xlab = "PropertyCrime",
-        ylab = "Property Crime"
-)
 
 
                 ####   boxplot of  Murder
@@ -578,24 +530,6 @@ boxplot(mergedMurder$Murder, main = "Boxplot of Murder with No outlier",
         border = "darkblue",  # Change border color
         horizontal = TRUE)    # Display boxplot horizontally)
 
-#calculate the outlier, and filter data
-# Calculate the first quartile, third quartile 
-Q1 <- quantile(mergedMurder$Murder, 0.25)
-Q3 <- quantile(mergedMurder$Murder, 0.75)
-# interquartile range (IQR)
-IQR <- Q3 - Q1
-
-#the lower and upper bounds, change multiplier for changing the bound
-lower <- Q1 -6 * IQR
-upper <- Q3 + 6 * IQR
-
-cleanedMurder<-mergedMurder[mergedMurder$Murder>=lower & 
-                              mergedMurder$Murder<=upper,]
-boxplot(cleanedMurder$Murder, horizontal = TRUE, 
-        main = "Less Outlier PLOT of Murder", xlab = "Murder",
-        ylab = "Murder"
-)
-
-
 #write.csv(mergedMurder,"C:\\Users\\aiger\\OneDrive\\Desktop\\ComputerScience\\CS_DM_541\\ProjectDM\\CSV\\CleanedDataWithOutlier.csv" )
-
+#write.csv(cleanedMurder,"C:\\Users\\aiger\\OneDrive\\Desktop\\ComputerScience\\CS_DM_541\\ProjectDM\\CSV\\CleanedData.csv" )
+#blabla<-read.csv("C:\\Users\\aiger\\OneDrive\\Desktop\\ComputerScience\\CS_DM_541\\ProjectDM\\CSV\\CleanedDataWithOutlier.csv")
