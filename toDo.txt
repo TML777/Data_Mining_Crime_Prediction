@@ -7,5 +7,6 @@ add year while merging
 4.etc
 
 5. Visualization: what has to be included
-
+6.https://californiaview.org/list-of-longitude-and-latitude-places-in-california/ 
+adding the long and latt of each city. must merge 
 
