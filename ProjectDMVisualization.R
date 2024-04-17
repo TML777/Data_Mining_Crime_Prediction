@@ -10,10 +10,95 @@ library(corrplot)
 
 ###download already merged data
 mergedMurder<- read.csv("C:\\Users\\aiger\\OneDrive\\Desktop\\ComputerScience\\CS_DM_541\\ProjectDM\\CSV\\CleanedDataWithOutlier.csv")
+mergedMurder$X<-NULL
+
 #sort the column based on alphabet
+
 mergedMurder<-mergedMurder[order(mergedMurder$NameCity),]
 
 summary(mergedMurder)
+
+#deal with NA
+#log transformation will help with right skew to more normalize
+transformData<-log(mergedMurder$Population+1)
+hist(transformData,breaks = 30, main = "Histogram with 30 bars", 
+     xlab = "Value", col = "lightblue" )
+
+# Add a normal distribution curve
+means <- mean(transformData, na.rm=TRUE)
+sds<- sd(transformData, na.rm=TRUE)
+
+curve(dnorm(x, mean=means, sd=sds) * length(transformData) * diff(hist(transformData, plot=FALSE)$breaks)[1], 
+      add=TRUE, col="red")
+#very skewed dist, thus use median 
+medians<- median(mergedMurder$Population, na.rm=TRUE)
+mergedMurder$Population[is.na(mergedMurder$Population)]<-medians
+summary(mergedMurder$Population)
+
+summary(mergedMurder)
+
+view(mergedMurder)
+#there is only 2 burlglary,4 property creme,  thus omit 
+# Using base R to remove rows with NA in a specific column
+mergedMurder <- mergedMurder[!is.na(mergedMurder$Burglary), ]
+mergedMurder <- mergedMurder[!is.na(mergedMurder$PropertyCrime), ]
+summary(mergedMurder)
+#fill data for arson 
+hist(mergedMurder$Arson)
+means <- mean(mergedMurder$Arson, na.rm=TRUE)
+sds<- sd(mergedMurder$Arson, na.rm=TRUE)
+
+curve(dnorm(x, mean=means, sd=sds) * length(mergedMurder$Arson) * diff(hist(mergedMurder$Arson, plot=FALSE)$breaks)[1], 
+      add=TRUE, col="red")
+
+#very skewed dist, thus use median 
+medians<- median(mergedMurder$Arson, na.rm=TRUE)
+mergedMurder$Arson[is.na(mergedMurder$Arson)]<-medians
+summary(mergedMurder)
+
+
+
+
+#split the data into train and test
+#SEEd
+set.seed(1234)
+index<-sample(nrow(mergedMurder), .80*nrow(mergedMurder))
+training<- mergedMurder[index, ]
+test<-mergedMurder[-index,]
+
+summary(mergedMurder)
+
+
+####run the model by using trained data by regression as DV
+options(scipen = 10)
+
+###omit na in traing
+training <- na.omit(training) 
+model<-lm(Murder~Population+	Violent+Robbery+Robbery+	Arson+Rape+	Assault, data =training)
+
+summary(model)
+#view(model$residuals)
+#################presents of outlayer of the data###########
+##       IQR approach 
+training$residual <- model$residuals #we added the residual column into our training set
+Q1<- quantile(training$residual, p=.25)
+Q3<- quantile(training$residual, p=.75)
+IQR<- IQR(training$residual)
+
+#look at equation
+min<-Q1-(1.5*IQR)
+max<-Q1+(1.5*IQR)
+
+
+data_nooutlayer<-training%>%filter(residual>=min & residual<=max)%>%select(-residual)
+
+plot(mergedMurder$Population/100000, mergedMurder$Murder)
+
+# ####run regression using data with no outlayer
+# model1<-lm(Murder~Population+	Violent+Robbery+Robbery+	Arson+Rape+	Assault, data =data_nooutlayer)
+# summary(model1)
+
+
 
 # Create a new column for the city numbers
 mergedMurder$CityNumber <- as.numeric(factor(mergedMurder$NameCity, 
@@ -120,7 +205,10 @@ AraonBoxPlot<-boxplot(mergedMurder$Arson, main = "Boxplot of Arson with No outli
 plot(mergedMurder$Population, mergedMurder$Murder, main = "Scatter plot of Population vs Murder", 
      xlab = "Population", ylab = "Murder number", col = "blue")
 # Regression line by using 
-abline(lm(mergedMurder$Murder ~ mergedMurder$Population), col = "red")
+# Regression line by using 
+abline(lm(mergedMurder$Murder ~ mergedMurder$Population), col = "purple")
+
+
 qqplot(mergedMurder$Population, mergedMurder$Murder,  main = "QQ plot of Population vs Murder", 
        xlab = "Population", ylab = "Murder number", col = "black")
 # Regression line by using 
@@ -129,15 +217,19 @@ abline(lm(mergedMurder$Murder ~ mergedMurder$Population), col = "red")
 
 plot(mergedMurder$Violent, mergedMurder$Murder, main = "Scatter plot of Violent vs Murder", 
     xlab = "Violent", ylab = "Murder number", col = "blue")
+# Regression line by using 
+abline(lm(mergedMurder$Murder ~ mergedMurder$Violent), col = "red")
 qqplot(mergedMurder$Violent, mergedMurder$Murder,  main = "QQ plot of Violent vs Murder", 
        xlab = "Violent", ylab = "Murder number", col = "black")
 # Regression line by using 
-abline(lm(mergedMurder$Murder ~ mergedMurder$Violent), col = "red")
+abline(lm(mergedMurder$Murder ~ mergedMurder$Violent), col = "orange")
 
 
 
 plot(mergedMurder$Robbery, mergedMurder$Murder, main = "Scatter plot of Robbery vs Murder", 
      xlab = "Robbery", ylab = "Murder number", col = "blue")
+# Regression line by using 
+abline(lm(mergedMurder$Murder ~ mergedMurder$Robbery), col = "orange")
 qqplot(mergedMurder$Robbery, mergedMurder$Murder,  main = "QQ plot of Robbery vs Murder", 
        xlab = "Robbery", ylab = "Murder number", col = "black")
 # Regression line by using 
@@ -146,6 +238,8 @@ abline(lm(mergedMurder$Murder ~ mergedMurder$Robbery), col = "red")
 
 plot(mergedMurder$Arson, mergedMurder$Murder, main = "Scatter plot of Arson vs Murder", 
      xlab = "Arson", ylab = "Murder number", col = "blue")
+# Regression line by using 
+abline(lm(mergedMurder$Murder ~ mergedMurder$Arson), col = "red")
 qqplot(mergedMurder$Arson, mergedMurder$Murder,  main = "QQ plot of Arson vs Murder", 
        xlab = "Arson", ylab = "Murder number", col = "black")
 # Regression line by using 
@@ -354,7 +448,7 @@ correlation_matrix
 
 # Visualize the correlation matrix
 
-corrplot(correlation_matrix, method = "square", 
+corr_mat<-corrplot(correlation_matrix, method = "circle", 
          # type = "lower",
          tl.col = "black",
          tl.srt = 45,
@@ -369,3 +463,6 @@ corrplot(correlation_matrix, method = "square",
 
 
 #write.csv(normMergedMurder,"C:/Users/aiger/OneDrive/Desktop/ComputerScience/CS_DM_541/ProjectDM/CSV/NormalizedDataMurder.csv")
+
+                               #clustering
+#help(clusterData)??

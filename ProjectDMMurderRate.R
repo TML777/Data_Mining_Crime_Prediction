@@ -17,9 +17,9 @@ for(file_path in file_paths) {
   table_name <- tools::file_path_sans_ext(basename(file_path))
   allSamples[[table_name]] <- read.csv(file_path)
 }
+allSamples$NormalizedDataMurder<-NULL
 
-
-#                              #convert City into String
+#                              #con#                              #con#                              #convert City into String
 # allSamples$crimeCalifornia2005$City<-as.character(allSamples$crimeCalifornia2005$City)
 # allSamples$crimeCalifornia2006$City<-as.character(allSamples$crimeCalifornia2006$City)
 # allSamples$crimeCalifornia2007$City<-as.character(allSamples$crimeCalifornia2007$City)
@@ -34,12 +34,8 @@ for(file_path in file_paths) {
 # allSamples$crimeCalifornia2016$City<-as.character(allSamples$crimeCalifornia2016$City)
 # allSamples$crimeCalifornia2017$City<-as.character(allSamples$crimeCalifornia2017$City)
 # allSamples$crimeCalifornia2018$City<-as.character(allSamples$crimeCalifornia2018$City)
-# allSamples$crimeCalifornia2019$City<-as.character(allSamples$crimeCalifornia2019$City)
 
-str(allSamples$crimeCalifornia2006$City)
                              #convert char to numerical values
-
-
 
 # deleting the "," in each column and convert it into numerical
 
@@ -119,7 +115,6 @@ allSamples$crimeCalifornia2019$Years<-2019
 #view(allSamples$crimeCalifornia2006)
 
                                  #combine all enties of each list
-
 combinedAllSamples <- bind_rows(allSamples, .id = "Dataset")
 view(combinedAllSamples)
 
@@ -228,37 +223,71 @@ summary(combinedAllSamples)
 #write.csv(combinedAllSamples,"C:\\Users\\aiger\\OneDrive\\Desktop\\ComputerScience\\CS_DM_541\\ProjectDM\\CSV\\MergedCleanedData.csv" )
 
 
-
+#combinedAllSamples<-read.csv("C:\\Users\\aiger\\OneDrive\\Desktop\\ComputerScience\\CS_DM_541\\ProjectDM\\CSV\\CleanedDataWithOutlier.csv")
                           #deal with NA
 mergedMurder <-combinedAllSamples
 summary(mergedMurder)
                          #population
-hist(mergedMurder$Population,breaks = 30, main = "Histogram with 30 bars", 
-     xlab = "Population", col = "lightblue" )
-
-#Add a normal distribution curve
+# Calculate mean and standard deviation
 means <- mean(mergedMurder$Population, na.rm=TRUE)
-sds<- sd(mergedMurder$Population, na.rm=TRUE)
+sds <- sd(mergedMurder$Population, na.rm=TRUE)
 
-curve(dnorm(x, mean=means, sd=sds) * length(mergedMurder$Population) * diff(hist(mergedMurder$Population, plot=FALSE)$breaks)[1], 
-      add=TRUE, col="red")
-         #skewed try to normalize for brtter visualization
-         #log transformation will help with right skew to more normalize
-transformData<-log(mergedMurder$Population+1)
+# Determine the range of your data for plotting
+xrange <- range(mergedMurder$Population )
 
-hist(transformData,breaks = 30, main = "Histogram with 30 bars", 
-     xlab = "transformed population Data", col = "lightblue" )
+# Plot histogram
+hist(mergedMurder$Population , breaks = 30, main = "Histogram Population no Outlier", 
+     xlab = "Population", col = "lightblue", freq=FALSE, xlim=xrange)
 
-# Add a normal distribution curve
-means <- mean(transformData, na.rm=TRUE)
-sds<- sd(transformData, na.rm=TRUE)
+# Adding a normal distribution curve
+curve(dnorm(x, mean=means, sd=sds), 
+      from=min(mergedMurder$Population ), to=max(mergedMurder$Population ), 
+      add=TRUE, col="red", lwd=2)
 
-curve(dnorm(x, mean=means, sd=sds) * length(transformData) * diff(hist(transformData, plot=FALSE)$breaks)[1], 
-      add=TRUE, col="red")
+# log transform 
+log_population <- log(mergedMurder$Population)
 
-#poriginal population distr is very skewed dist, thus use median 
-medians<- median(mergedMurder$Population, na.rm=TRUE)
-mergedMurder$Population[is.na(mergedMurder$Population)]<-medians
+# mean and stdv
+log_means <- mean(log_population, na.rm=TRUE)
+log_sds <- sd(log_population, na.rm=TRUE)
+
+# density of the histogram
+hist_density <- hist(log_population, breaks=30, plot=FALSE)
+
+# 
+hist(log_population, breaks=30, main="Histogram of Log-transformed Population",
+     xlab="Log(Population)", col="lightblue", freq=FALSE)
+
+# x range range of the histogram
+xvals <- seq(min(hist_density$breaks), max(hist_density$breaks), length=200)
+
+#  y-values for the normal distribution curve
+yvals <- dnorm(xvals, mean=log_means, sd=log_sds)
+
+#adjsut
+max_density <- max(hist_density$density)
+scaled_yvals <- yvals * (max_density / max(yvals))
+
+#add curve to the histogram
+lines(xvals, scaled_yvals, col="darkred", lwd=2)
+
+   
+#          #log transformation will help you with shifts
+# transformData<-log(mergedMurder$Population+1)
+# 
+# hist(transformData,breaks = 30, main = "Histogram With Transformed LOG population", 
+#      xlab = "transformed population Data", col = "lightblue",  )
+# 
+# # Add a normal distribution curve
+# means <- mean(transformData, na.rm=TRUE)
+# sds<- sd(transformData, na.rm=TRUE)
+# 
+# curve(dnorm(x, mean=means, sd=sds) * length(transformData) * diff(hist(transformData, plot=FALSE)$breaks)[1], 
+#       add=TRUE, col="red")
+
+#original population distr is norm dist, thus use means 
+means<- mean(mergedMurder$Population, na.rm=TRUE)
+mergedMurder$Population[is.na(mergedMurder$Population)]<-means
 summary(mergedMurder$Population)
 
 #view(mergedMurder)
@@ -309,7 +338,7 @@ area<-read.csv("C:\\Users\\aiger\\Downloads\\AreaTable.csv")
                     #CLEAN the area
                    #delete unnessary columns, add new columns
 area$X<-NULL
-area$X1<-NULL
+area$X3<-NULL
 area$City<-area$X3
 area$SQmiles<- area$X2
 
@@ -432,15 +461,18 @@ boxplot(mergedMurder$Population/100000, main = "Boxplot of Population with No ou
 
 
                          #calculate the outlier, and filter data
+
 # Calculate the first quartile, third quartile 
 Q1 <- quantile(mergedMurder$Population, 0.25)
 Q3 <- quantile(mergedMurder$Population, 0.75)
+
 # interquartile range (IQR)
 IQR <- Q3 - Q1
-
-#the lower and upper bounds, change multiplier for changing the bound
+#the lower and upper bounds
 lower <- Q1 -3* IQR
 upper <- Q3 + 3 * IQR
+
+#3 is multiplier for changing the bounds
 
 cleanedMurder<-mergedMurder[mergedMurder$Population>=lower & 
                               mergedMurder$Population<=upper,]
